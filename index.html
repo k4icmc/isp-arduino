@@ -1,1 +1,902 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apresentação 3D Parallax</title>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&display=swap');
 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            overflow: hidden;
+            font-family: 'Rajdhani', sans-serif;
+        }
+
+        .presentation-container {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            background: radial-gradient(ellipse at center, #0a0a1a 0%, #000000 70%, #000000 100%);
+            position: relative;
+        }
+
+        /* Animated Background Grid */
+        .cyber-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 150, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 150, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 20s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes gridMove {
+            0% { transform: perspective(500px) rotateX(60deg) translateY(0); }
+            100% { transform: perspective(500px) rotateX(60deg) translateY(50px); }
+        }
+
+        /* Floating Particles */
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #00d4ff;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #00d4ff, 0 0 20px #00d4ff, 0 0 30px #00d4ff;
+            animation: floatParticle 15s infinite linear;
+            opacity: 0.6;
+        }
+
+        .particle:nth-child(1) { left: 10%; animation-delay: 0s; animation-duration: 12s; }
+        .particle:nth-child(2) { left: 20%; animation-delay: 2s; animation-duration: 14s; }
+        .particle:nth-child(3) { left: 30%; animation-delay: 4s; animation-duration: 16s; }
+        .particle:nth-child(4) { left: 40%; animation-delay: 1s; animation-duration: 13s; }
+        .particle:nth-child(5) { left: 50%; animation-delay: 3s; animation-duration: 15s; }
+        .particle:nth-child(6) { left: 60%; animation-delay: 5s; animation-duration: 11s; }
+        .particle:nth-child(7) { left: 70%; animation-delay: 2.5s; animation-duration: 17s; }
+        .particle:nth-child(8) { left: 80%; animation-delay: 1.5s; animation-duration: 14s; }
+        .particle:nth-child(9) { left: 90%; animation-delay: 3.5s; animation-duration: 12s; }
+        .particle:nth-child(10) { left: 5%; animation-delay: 4.5s; animation-duration: 16s; }
+
+        @keyframes floatParticle {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            100% { transform: translateY(-100vh) scale(1); opacity: 0; }
+        }
+
+        /* Slide Container */
+        .slide-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            perspective: 1500px;
+        }
+
+        /* 3D Parallax Image Container */
+        .parallax-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            transition: transform 0.1s ease-out, opacity 0.8s ease;
+        }
+
+        .parallax-container.transitioning {
+            opacity: 0;
+            transform: translateZ(-200px) rotateY(30deg) !important;
+        }
+
+        .parallax-bg {
+            position: absolute;
+            top: -10%;
+            left: -10%;
+            width: 120%;
+            height: 120%;
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.3) saturate(1.2);
+            transform: translateZ(-100px) scale(1.2);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .parallax-mid {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) translateZ(0px);
+            width: 70%;
+            max-width: 600px;
+            aspect-ratio: 16/10;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 
+                0 0 0 2px rgba(0, 212, 255, 0.5),
+                0 0 30px rgba(0, 212, 255, 0.3),
+                0 0 60px rgba(0, 212, 255, 0.2),
+                0 50px 100px rgba(0, 0, 0, 0.5);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .parallax-mid::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent 40%,
+                rgba(0, 212, 255, 0.1) 50%,
+                transparent 60%
+            );
+            animation: shine 3s infinite;
+            pointer-events: none;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .parallax-mid img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .parallax-mid:hover img {
+            transform: scale(1.05);
+        }
+
+        /* Neon Frame */
+        .neon-frame {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) translateZ(50px);
+            width: calc(70% + 40px);
+            max-width: 640px;
+            aspect-ratio: 16/10;
+            border: 2px solid transparent;
+            border-image: linear-gradient(45deg, #00d4ff, #0066ff, #00d4ff) 1;
+            border-radius: 25px;
+            pointer-events: none;
+            animation: framePulse 2s ease-in-out infinite;
+        }
+
+        @keyframes framePulse {
+            0%, 100% { opacity: 0.5; filter: blur(0px); }
+            50% { opacity: 1; filter: blur(2px); }
+        }
+
+        /* Content Card */
+        .content-card {
+            position: absolute;
+            bottom: 10%;
+            left: 50%;
+            transform: translateX(-50%) translateZ(100px);
+            width: 90%;
+            max-width: 700px;
+            background: linear-gradient(
+                135deg,
+                rgba(0, 20, 40, 0.9) 0%,
+                rgba(0, 10, 30, 0.95) 100%
+            );
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 30px 40px;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            box-shadow: 
+                0 0 30px rgba(0, 212, 255, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 1;
+        }
+
+        .content-card.transitioning {
+            opacity: 0;
+            transform: translateX(-50%) translateZ(100px) translateY(50px);
+        }
+
+        .content-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(1.5rem, 4vw, 2.5rem);
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 15px;
+            text-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+            letter-spacing: 2px;
+        }
+
+        .content-description {
+            font-size: clamp(0.9rem, 2vw, 1.1rem);
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.7;
+            margin-bottom: 25px;
+            font-weight: 400;
+        }
+
+        /* Buttons */
+        .button-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .neon-button {
+            position: relative;
+            padding: 12px 30px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #00d4ff;
+            background: transparent;
+            border: 2px solid #00d4ff;
+            border-radius: 50px;
+            cursor: pointer;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .neon-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.4), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .neon-button:hover::before {
+            left: 100%;
+        }
+
+        .neon-button:hover {
+            background: rgba(0, 212, 255, 0.2);
+            box-shadow: 
+                0 0 20px rgba(0, 212, 255, 0.5),
+                0 0 40px rgba(0, 212, 255, 0.3),
+                inset 0 0 20px rgba(0, 212, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .neon-button:active {
+            transform: translateY(0);
+        }
+
+        .neon-button.primary {
+            background: linear-gradient(135deg, #00d4ff 0%, #0066ff 100%);
+            color: #000;
+            border-color: transparent;
+        }
+
+        .neon-button.primary:hover {
+            box-shadow: 
+                0 0 30px rgba(0, 212, 255, 0.7),
+                0 0 60px rgba(0, 212, 255, 0.4);
+        }
+
+        .neon-button:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        /* Navigation Arrows */
+        .nav-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%) translateZ(150px);
+            width: 60px;
+            height: 60px;
+            background: rgba(0, 20, 40, 0.8);
+            border: 2px solid rgba(0, 212, 255, 0.5);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-arrow:hover {
+            background: rgba(0, 212, 255, 0.2);
+            border-color: #00d4ff;
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
+            transform: translateY(-50%) translateZ(150px) scale(1.1);
+        }
+
+        .nav-arrow.left {
+            left: 20px;
+        }
+
+        .nav-arrow.right {
+            right: 20px;
+        }
+
+        .nav-arrow svg {
+            width: 24px;
+            height: 24px;
+            fill: none;
+            stroke: #00d4ff;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .nav-arrow:disabled {
+            opacity: 0.2;
+            cursor: not-allowed;
+        }
+
+        .nav-arrow:disabled:hover {
+            transform: translateY(-50%) translateZ(150px);
+            background: rgba(0, 20, 40, 0.8);
+            border-color: rgba(0, 212, 255, 0.5);
+            box-shadow: none;
+        }
+
+        /* Slide Indicators */
+        .slide-indicators {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateZ(200px);
+            display: flex;
+            gap: 15px;
+            z-index: 100;
+        }
+
+        .indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(0, 212, 255, 0.3);
+            border: 2px solid rgba(0, 212, 255, 0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .indicator.active {
+            background: #00d4ff;
+            box-shadow: 0 0 15px #00d4ff, 0 0 30px #00d4ff;
+            transform: scale(1.2);
+        }
+
+        .indicator:hover:not(.active) {
+            background: rgba(0, 212, 255, 0.5);
+            transform: scale(1.1);
+        }
+
+        /* Slide Counter */
+        .slide-counter {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            color: rgba(0, 212, 255, 0.8);
+            letter-spacing: 3px;
+            transform: translateZ(100px);
+        }
+
+        .slide-counter span {
+            color: #00d4ff;
+            font-weight: 700;
+            text-shadow: 0 0 10px #00d4ff;
+        }
+
+        /* Decorative Elements */
+        .corner-decoration {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            pointer-events: none;
+        }
+
+        .corner-decoration.top-left {
+            top: 20px;
+            left: 20px;
+            border-top: 2px solid rgba(0, 212, 255, 0.5);
+            border-left: 2px solid rgba(0, 212, 255, 0.5);
+        }
+
+        .corner-decoration.top-right {
+            top: 20px;
+            right: 20px;
+            border-top: 2px solid rgba(0, 212, 255, 0.5);
+            border-right: 2px solid rgba(0, 212, 255, 0.5);
+        }
+
+        .corner-decoration.bottom-left {
+            bottom: 20px;
+            left: 20px;
+            border-bottom: 2px solid rgba(0, 212, 255, 0.5);
+            border-left: 2px solid rgba(0, 212, 255, 0.5);
+        }
+
+        .corner-decoration.bottom-right {
+            bottom: 20px;
+            right: 20px;
+            border-bottom: 2px solid rgba(0, 212, 255, 0.5);
+            border-right: 2px solid rgba(0, 212, 255, 0.5);
+        }
+
+        /* Scanline Effect */
+        .scanlines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0, 0, 0, 0.03) 2px,
+                rgba(0, 0, 0, 0.03) 4px
+            );
+            pointer-events: none;
+            animation: scanlineMove 10s linear infinite;
+        }
+
+        @keyframes scanlineMove {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(4px); }
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .parallax-mid {
+                width: 85%;
+                top: 35%;
+            }
+
+            .neon-frame {
+                width: calc(85% + 30px);
+            }
+
+            .content-card {
+                bottom: 5%;
+                padding: 20px 25px;
+                width: 95%;
+            }
+
+            .nav-arrow {
+                width: 45px;
+                height: 45px;
+            }
+
+            .nav-arrow.left {
+                left: 10px;
+            }
+
+            .nav-arrow.right {
+                right: 10px;
+            }
+
+            .corner-decoration {
+                width: 50px;
+                height: 50px;
+            }
+
+            .slide-counter {
+                top: 15px;
+                right: 15px;
+                font-size: 1rem;
+            }
+
+            .button-group {
+                justify-content: center;
+            }
+
+            .neon-button {
+                padding: 10px 20px;
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .parallax-mid {
+                top: 30%;
+                width: 90%;
+            }
+
+            .content-card {
+                bottom: 3%;
+                padding: 15px 20px;
+            }
+
+            .content-title {
+                font-size: 1.2rem;
+            }
+
+            .content-description {
+                font-size: 0.85rem;
+                margin-bottom: 15px;
+            }
+
+            .slide-indicators {
+                bottom: 15px;
+            }
+
+            .indicator {
+                width: 10px;
+                height: 10px;
+            }
+        }
+
+        /* Glow Effects */
+        .glow-line {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #00d4ff, transparent);
+            animation: glowMove 3s ease-in-out infinite;
+        }
+
+        .glow-line.top {
+            top: 0;
+            left: 0;
+            width: 100%;
+        }
+
+        .glow-line.bottom {
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            animation-delay: 1.5s;
+        }
+
+        @keyframes glowMove {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation-container">
+        <!-- Animated Background Elements -->
+        <div class="cyber-grid"></div>
+        <div class="scanlines"></div>
+        
+        <!-- Floating Particles -->
+        <div class="particles">
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+        </div>
+
+        <!-- Decorative Corners -->
+        <div class="corner-decoration top-left"></div>
+        <div class="corner-decoration top-right"></div>
+        <div class="corner-decoration bottom-left"></div>
+        <div class="corner-decoration bottom-right"></div>
+
+        <!-- Glow Lines -->
+        <div class="glow-line top"></div>
+        <div class="glow-line bottom"></div>
+
+        <!-- Slide Counter -->
+        <div class="slide-counter">
+            <span id="currentSlide">01</span> / <span id="totalSlides">03</span>
+        </div>
+
+        <!-- Main Slide Wrapper -->
+        <div class="slide-wrapper">
+            <!-- 3D Parallax Container -->
+            <div class="parallax-container" id="parallaxContainer">
+                <!-- Background Layer -->
+                <div class="parallax-bg" id="parallaxBg"></div>
+
+                <!-- Middle Layer - Main Image -->
+                <div class="parallax-mid" id="parallaxMid">
+                    <img id="mainImage" src="" alt="">
+                </div>
+
+                <!-- Neon Frame Layer -->
+                <div class="neon-frame" id="neonFrame"></div>
+            </div>
+
+            <!-- Content Card -->
+            <div class="content-card" id="contentCard">
+                <h2 class="content-title" id="slideTitle"></h2>
+                <p class="content-description" id="slideDescription"></p>
+                <div class="button-group" id="buttonGroup">
+                    <a href__="#" target="_blank" rel="noopener noreferrer" class="neon-button primary" id="linkButton">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                            <polyline points="15 3 21 3 21 9"></polyline>
+                            <line x1="10" y1="14" x2="21" y2="3"></line>
+                        </svg>
+                        <span id="linkText">Acessar Site</span>
+                    </a>
+                    
+                    <button class="neon-button" id="prevButton" style="display:none;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="15 18 9 12 15 6"></polyline>
+                        </svg>
+                        Voltar
+                    </button>
+                    
+                    <button class="neon-button" id="nextButton">
+                        Próximo
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Navigation Arrows -->
+            <button class="nav-arrow left" id="navLeft" disabled>
+                <svg viewBox="0 0 24 24">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+            </button>
+            
+            <button class="nav-arrow right" id="navRight">
+                <svg viewBox="0 0 24 24">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+            </button>
+
+            <!-- Slide Indicators -->
+            <div class="slide-indicators" id="slideIndicators"></div>
+        </div>
+    </div>
+
+    <script>
+        // ====================================
+        // CONFIGURAÇÃO DOS SLIDES - EDITE AQUI
+        // ====================================
+        const slides = [
+            {
+                // SLIDE 1 - ALTERE AQUI
+                image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&q=80", // <<< COLOQUE O LINK DA IMAGEM 1 AQUI
+                title: "Título do Slide 1", // <<< COLOQUE O TÍTULO 1 AQUI
+                description: "Descrição detalhada do primeiro slide. Adicione aqui o conteúdo que deseja apresentar na sua apresentação.", // <<< COLOQUE A DESCRIÇÃO 1 AQUI
+                link: "https://google.com", // <<< COLOQUE O LINK DO BOTÃO 1 AQUI
+                linkText: "Acessar Site" // <<< COLOQUE O TEXTO DO BOTÃO 1 AQUI
+            },
+            {
+                // SLIDE 2 - ALTERE AQUI
+                image: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=1920&q=80", // <<< COLOQUE O LINK DA IMAGEM 2 AQUI
+                title: "Título do Slide 2", // <<< COLOQUE O TÍTULO 2 AQUI
+                description: "Descrição detalhada do segundo slide. Adicione aqui o conteúdo que deseja apresentar na sua apresentação.", // <<< COLOQUE A DESCRIÇÃO 2 AQUI
+                link: "https://google.com", // <<< COLOQUE O LINK DO BOTÃO 2 AQUI
+                linkText: "Acessar Site" // <<< COLOQUE O TEXTO DO BOTÃO 2 AQUI
+            },
+            {
+                // SLIDE 3 - ALTERE AQUI
+                image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=1920&q=80", // <<< COLOQUE O LINK DA IMAGEM 3 AQUI
+                title: "Título do Slide 3", // <<< COLOQUE O TÍTULO 3 AQUI
+                description: "Descrição detalhada do terceiro slide. Adicione aqui o conteúdo que deseja apresentar na sua apresentação.", // <<< COLOQUE A DESCRIÇÃO 3 AQUI
+                link: "https://google.com", // <<< COLOQUE O LINK DO BOTÃO 3 AQUI
+                linkText: "Acessar Site" // <<< COLOQUE O TEXTO DO BOTÃO 3 AQUI
+            }
+        ];
+        // ====================================
+        // FIM DA CONFIGURAÇÃO
+        // ====================================
+
+        let currentSlide = 0;
+        let isTransitioning = false;
+        let mousePosition = { x: 0, y: 0 };
+
+        // Elements
+        const parallaxContainer = document.getElementById('parallaxContainer');
+        const parallaxBg = document.getElementById('parallaxBg');
+        const parallaxMid = document.getElementById('parallaxMid');
+        const neonFrame = document.getElementById('neonFrame');
+        const mainImage = document.getElementById('mainImage');
+        const contentCard = document.getElementById('contentCard');
+        const slideTitle = document.getElementById('slideTitle');
+        const slideDescription = document.getElementById('slideDescription');
+        const linkButton = document.getElementById('linkButton');
+        const linkText = document.getElementById('linkText');
+        const prevButton = document.getElementById('prevButton');
+        const nextButton = document.getElementById('nextButton');
+        const navLeft = document.getElementById('navLeft');
+        const navRight = document.getElementById('navRight');
+        const slideIndicators = document.getElementById('slideIndicators');
+        const currentSlideEl = document.getElementById('currentSlide');
+        const totalSlidesEl = document.getElementById('totalSlides');
+
+        // Initialize
+        function init() {
+            // Create indicators
+            slides.forEach((_, index) => {
+                const indicator = document.createElement('div');
+                indicator.className = 'indicator' + (index === 0 ? ' active' : '');
+                indicator.addEventListener('click', () => goToSlide(index));
+                slideIndicators.appendChild(indicator);
+            });
+
+            totalSlidesEl.textContent = slides.length.toString().padStart(2, '0');
+            updateSlide();
+        }
+
+        // Mouse move parallax effect
+        document.addEventListener('mousemove', (e) => {
+            const x = (e.clientX / window.innerWidth - 0.5) * 2;
+            const y = (e.clientY / window.innerHeight - 0.5) * 2;
+            mousePosition = { x, y };
+            
+            if (!isTransitioning) {
+                parallaxContainer.style.transform = `
+                    rotateY(${x * 5}deg) 
+                    rotateX(${-y * 5}deg)
+                    translateZ(0px)
+                `;
+                
+                parallaxBg.style.transform = `
+                    translateZ(-100px) 
+                    scale(1.2)
+                    translateX(${x * -30}px)
+                    translateY(${y * -30}px)
+                `;
+                
+                parallaxMid.style.transform = `
+                    translate(-50%, -50%) 
+                    translateZ(0px)
+                    translateX(${x * 15}px)
+                    translateY(${y * 15}px)
+                `;
+                
+                neonFrame.style.transform = `
+                    translate(-50%, -50%) 
+                    translateZ(50px)
+                    translateX(${x * 25}px)
+                    translateY(${y * 25}px)
+                `;
+            }
+        });
+
+        // Update slide content
+        function updateSlide() {
+            const slide = slides[currentSlide];
+            
+            mainImage.src = slide.image;
+            mainImage.alt = slide.title;
+            parallaxBg.style.backgroundImage = `url(${slide.image})`;
+            slideTitle.textContent = slide.title;
+            slideDescription.textContent = slide.description;
+            linkButton.href = slide.link;
+            linkText.textContent = slide.linkText;
+            
+            // Update counter
+            currentSlideEl.textContent = (currentSlide + 1).toString().padStart(2, '0');
+            
+            // Update buttons
+            prevButton.style.display = currentSlide > 0 ? 'inline-flex' : 'none';
+            nextButton.style.display = currentSlide < slides.length - 1 ? 'inline-flex' : 'none';
+            
+            navLeft.disabled = currentSlide === 0;
+            navRight.disabled = currentSlide === slides.length - 1;
+            
+            // Update indicators
+            document.querySelectorAll('.indicator').forEach((indicator, index) => {
+                indicator.classList.toggle('active', index === currentSlide);
+            });
+        }
+
+        // Navigate to specific slide
+        function goToSlide(index) {
+            if (isTransitioning || currentSlide === index || index < 0 || index >= slides.length) {
+                return;
+            }
+            
+            isTransitioning = true;
+            parallaxContainer.classList.add('transitioning');
+            contentCard.classList.add('transitioning');
+            
+            setTimeout(() => {
+                currentSlide = index;
+                updateSlide();
+                
+                setTimeout(() => {
+                    parallaxContainer.classList.remove('transitioning');
+                    contentCard.classList.remove('transitioning');
+                    isTransitioning = false;
+                }, 800);
+            }, 400);
+        }
+
+        // Navigate functions
+        function navigateNext() {
+            if (currentSlide < slides.length - 1) {
+                goToSlide(currentSlide + 1);
+            }
+        }
+
+        function navigatePrev() {
+            if (currentSlide > 0) {
+                goToSlide(currentSlide - 1);
+            }
+        }
+
+        // Event listeners
+        prevButton.addEventListener('click', navigatePrev);
+        nextButton.addEventListener('click', navigateNext);
+        navLeft.addEventListener('click', navigatePrev);
+        navRight.addEventListener('click', navigateNext);
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+                navigateNext();
+            } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                navigatePrev();
+            }
+        });
+
+        // Touch swipe support
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            if (touchEndX < touchStartX - 50) {
+                navigateNext();
+            }
+            if (touchEndX > touchStartX + 50) {
+                navigatePrev();
+            }
+        }
+
+        // Start the app
+        init();
+    </script>
+</body>
+</html>
