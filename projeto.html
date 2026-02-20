@@ -705,7 +705,7 @@ print("="*50)</code></pre>
                  ========================================== -->
             <div class="code-block">
                 <div class="code-header">
-                    <h3 class="code-title">📄 Código 3</h3>
+                    <h3 class="code-title">📄 Código EM C++ PARA PLACA ARDUINO</h3>
                     <button class="copy-btn" onclick="copyCode(this, 'code3')">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
@@ -715,7 +715,122 @@ print("="*50)</code></pre>
                     </button>
                 </div>
                 <div class="code-content">
-                    <pre id="code3"><code><!-- COLE SEU CÓDIGO AQUI NO BLOCO 3 --></code></pre>
+                    <pre id="code3"><code>/*
+ * CONTROLE DE LEDS E SERVO POR DETECÇÃO DE MÃOS
+ * Arduino Uno
+ * 
+ * Conexões:
+ * - Servo motor no pino 9
+ * - LED 1 no pino 3 (com resistor 220Ω)
+ * - LED 2 no pino 4 (com resistor 220Ω)
+ * - LED 3 no pino 5 (com resistor 220Ω)
+ * - LED 4 no pino 6 (com resistor 220Ω)
+ * - LED 5 no pino 7 (com resistor 220Ω)
+ * - GND dos LEDs e servo no GND do Arduino
+ * - VCC do servo no 5V do Arduino
+ */
+
+#include <Servo.h>
+
+// ============================================
+// DECLARAÇÃO DE VARIÁVEIS
+// ============================================
+Servo myservo;           // Objeto do servo motor
+int pos = 0;              // Posição atual do servo
+int valorRecebido = 0;    // Valor recebido pela serial
+int numeroDedos = 0;      // Número de dedos detectados
+
+// Pinos dos LEDs (conecte nos pinos 3,4,5,6,7)
+const int ledPins[] = {3, 4, 5, 6, 7};
+const int numLeds = 5;    // Quantidade de LEDs
+
+// ============================================
+// CONFIGURAÇÃO INICIAL
+// ============================================
+void setup() {
+  // Inicia comunicação serial (mesma velocidade do Python)
+  Serial.begin(9600);
+  
+  // Configura o servo no pino 9
+  myservo.attach(9);
+  myservo.write(0); // Posição inicial (0 graus)
+  
+  // Configura os pinos dos LEDs como saída
+  for (int i = 0; i < numLeds; i++) {
+    pinMode(ledPins[i], OUTPUT);
+    digitalWrite(ledPins[i], LOW); // Todos apagados no início
+  }
+  
+  // Mensagem de inicialização (opcional)
+  Serial.println("Arduino pronto!");
+}
+
+// ============================================
+// LOOP PRINCIPAL
+// ============================================
+void loop() {
+  // Verifica se tem dados chegando pela serial
+  // O Python envia números de 100 a 105 (100 = 0 dedos, 105 = 5 dedos)
+  if (Serial.available() >= 3) {
+    
+    // Buffer para receber os dados (3 dígitos + caractere nulo)
+    char dados[4];
+    
+    // Lê os dados até encontrar uma quebra de linha
+    int bytesLidos = Serial.readBytesUntil('\n', dados, 3);
+    dados[bytesLidos] = '\0'; // Adiciona caractere nulo no final
+    
+    // Converte a string para número inteiro
+    valorRecebido = atoi(dados);
+    
+    // Verifica se está no intervalo válido (100 a 105)
+    if (valorRecebido >= 100 && valorRecebido <= 105) {
+      
+      // Calcula quantos dedos (subtrai 100)
+      // 100 = 0 dedos, 101 = 1 dedo, 102 = 2 dedos, etc.
+      numeroDedos = valorRecebido - 100;
+      
+      // ========================================
+      // CONTROLE DO SERVO MOTOR
+      // ========================================
+      // Mapeia o número de dedos (0-5) para posição do servo (0-170 graus)
+      pos = map(numeroDedos, 0, 5, 0, 170);
+      myservo.write(pos); // Move o servo para a posição calculada
+      
+      // ========================================
+      // CONTROLE DOS LEDS
+      // ========================================
+      // Acende os LEDs de acordo com o número de dedos
+      // Ex: 3 dedos = acende LEDs 1, 2 e 3
+      for (int i = 0; i < numLeds; i++) {
+        if (i < numeroDedos) {
+          digitalWrite(ledPins[i], HIGH); // Acende LED
+        } else {
+          digitalWrite(ledPins[i], LOW);  // Apaga LED
+        }
+      }
+      
+      // ========================================
+      // FEEDBACK NO MONITOR SERIAL
+      // ========================================
+      Serial.print("Dedos: ");
+      Serial.print(numeroDedos);
+      Serial.print(" | Servo: ");
+      Serial.print(pos);
+      Serial.println(" graus");
+      
+    } else {
+      // Se receber um valor inválido, desliga tudo
+      for (int i = 0; i < numLeds; i++) {
+        digitalWrite(ledPins[i], LOW);
+      }
+      myservo.write(0);
+      Serial.println("Comando invalido!");
+    }
+  }
+  
+  delay(10); // Pequena pausa para estabilidade
+}</code></pre>
                 </div>
             </div>
 
