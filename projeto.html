@@ -221,19 +221,31 @@
             border-color: rgba(34, 197, 94, 0.4);
         }
 
-        /* Área do código */
+        /* Área do código - OCULTA O CÓDIGO VISUALMENTE */
         .code-content {
             padding: 24px;
-            overflow-x: auto;
+            position: relative;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
+        /* OCULTA O CÓDIGO REAL (mas mantém no DOM para copiar) */
         .code-content pre {
-            color: rgba(191, 219, 254, 0.8);
-            font-family: 'Courier New', monospace;
-            font-size: 0.9rem;
-            line-height: 1.6;
-            white-space: pre-wrap;
-            word-wrap: break-word;
+            position: absolute;
+            left: -9999px;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* MENSAGEM QUE APARECE NO LUGAR DO CÓDIGO */
+        .code-content::after {
+            content: '🔒 Clique em "Copiar" para obter o código';
+            color: rgba(147, 197, 253, 0.5);
+            font-size: 0.95rem;
+            font-style: italic;
+            text-align: center;
         }
 
         /* ========================================
@@ -286,7 +298,6 @@
              CABEÇALHO DO SITE
              ========================================== -->
         <header class="header">
-           
             <p>Copie os códigos abaixo com apenas um clique</p>
             <div class="header-line"></div>
         </header>
@@ -312,10 +323,6 @@
 
             <!-- ==========================================
                  BLOCO 1
-                 ==========================================
-                 ALTERE AQUI:
-                 - <h3>: título do bloco 1
-                 - <pre><code>: cole o código 1 aqui
                  ========================================== -->
             <div class="code-block">
                 <div class="code-header">
@@ -338,10 +345,6 @@ pip install numpy</code></pre>
 
             <!-- ==========================================
                  BLOCO 2
-                 ==========================================
-                 ALTERE AQUI:
-                 - <h3>: título do bloco 2
-                 - <pre><code>: cole o código 2 aqui
                  ========================================== -->
             <div class="code-block">
                 <div class="code-header">
@@ -698,10 +701,6 @@ print("="*50)</code></pre>
 
             <!-- ==========================================
                  BLOCO 3
-                 ==========================================
-                 ALTERE AQUI:
-                 - <h3>: título do bloco 3
-                 - <pre><code>: cole o código 3 aqui
                  ========================================== -->
             <div class="code-block">
                 <div class="code-header">
