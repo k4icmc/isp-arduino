@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Share</title>
+    <style>
+        /* ========================================
+           RESET E CONFIGURAÇÕES BÁSICAS
+           ======================================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            /* Fundo dark com gradiente azul */
+            background: linear-gradient(135deg, #020617 0%, #0c4a6e 50%, #020617 100%);
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* ========================================
+           EFEITOS DE FUNDO (orbes luminosas)
+           ======================================== */
+        .bg-orb-1 {
+            position: absolute;
+            top: 0;
+            left: 25%;
+            width: 600px;
+            height: 600px;
+            background: rgba(59, 130, 246, 0.08);
+            border-radius: 50%;
+            filter: blur(120px);
+            pointer-events: none;
+        }
+
+        .bg-orb-2 {
+            position: absolute;
+            bottom: 0;
+            right: 25%;
+            width: 500px;
+            height: 500px;
+            background: rgba(6, 182, 212, 0.06);
+            border-radius: 50%;
+            filter: blur(100px);
+            pointer-events: none;
+        }
+
+        .bg-orb-3 {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 800px;
+            height: 800px;
+            background: rgba(37, 99, 235, 0.04);
+            border-radius: 50%;
+            filter: blur(150px);
+            pointer-events: none;
+        }
+
+        /* ========================================
+           CONTAINER PRINCIPAL
+           ======================================== */
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        /* ========================================
+           CABEÇALHO DO SITE
+           ======================================== */
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 900;
+            background: linear-gradient(90deg, #93c5fd, #67e8f9, #60a5fa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+        }
+
+        .header p {
+            color: rgba(147, 197, 253, 0.6);
+            font-size: 1.1rem;
+            font-weight: 300;
+        }
+
+        .header-line {
+            width: 80px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.5), transparent);
+            margin: 20px auto 0;
+            border-radius: 10px;
+        }
+
+        /* ========================================
+           BANNER DO LINK (destacado)
+           ======================================== */
+        .link-banner {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 24px 32px;
+            margin-bottom: 50px;
+            background: linear-gradient(90deg, rgba(37, 99, 235, 0.2), rgba(59, 130, 246, 0.3), rgba(6, 182, 212, 0.2));
+            border: 1px solid rgba(59, 130, 246, 0.25);
+            border-radius: 16px;
+            text-decoration: none;
+            transition: all 0.5s ease;
+            backdrop-filter: blur(20px);
+        }
+
+        .link-banner:hover {
+            background: linear-gradient(90deg, rgba(37, 99, 235, 0.3), rgba(59, 130, 246, 0.4), rgba(6, 182, 212, 0.3));
+            border-color: rgba(59, 130, 246, 0.5);
+            box-shadow: 0 0 60px rgba(59, 130, 246, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .link-banner span {
+            color: #dbeafe;
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .link-banner svg {
+            color: #60a5fa;
+            width: 20px;
+            height: 20px;
+        }
+
+        /* ========================================
+           BLOCOS DE CÓDIGO
+           ======================================== */
+        .code-blocks {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .code-block {
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.8), rgba(12, 74, 110, 0.5));
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.5s ease;
+            backdrop-filter: blur(30px);
+        }
+
+        .code-block:hover {
+            border-color: rgba(59, 130, 246, 0.4);
+            box-shadow: 0 0 40px rgba(59, 130, 246, 0.15);
+        }
+
+        /* Linha brilhante no topo */
+        .code-block::before {
+            content: '';
+            display: block;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(96, 165, 250, 0.5), transparent);
+        }
+
+        /* Cabeçalho do bloco: título + botão */
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+        }
+
+        .code-title {
+            color: #dbeafe;
+            font-size: 1.15rem;
+            font-weight: 600;
+        }
+
+        /* Botão de copiar */
+        .copy-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            background: rgba(59, 130, 246, 0.1);
+            color: #93c5fd;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            background: rgba(59, 130, 246, 0.2);
+            color: #bfdbfe;
+            border-color: rgba(59, 130, 246, 0.4);
+        }
+
+        .copy-btn:active {
+            transform: scale(0.95);
+        }
+
+        .copy-btn.copied {
+            background: rgba(34, 197, 94, 0.2);
+            color: #86efac;
+            border-color: rgba(34, 197, 94, 0.4);
+        }
+
+        /* Área do código */
+        .code-content {
+            padding: 24px;
+            overflow-x: auto;
+        }
+
+        .code-content pre {
+            color: rgba(191, 219, 254, 0.8);
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        /* ========================================
+           RODAPÉ
+           ======================================== */
+        .footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(59, 130, 246, 0.1);
+        }
+
+        .footer p {
+            color: rgba(96, 165, 250, 0.3);
+            font-size: 0.85rem;
+            font-weight: 300;
+        }
+
+        /* ========================================
+           RESPONSIVIDADE
+           ======================================== */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .code-header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+
+            .copy-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Efeitos de fundo (orbes luminosas) -->
+    <div class="bg-orb-1"></div>
+    <div class="bg-orb-2"></div>
+    <div class="bg-orb-3"></div>
+
+    <!-- Container principal -->
+    <div class="container">
+
+        <!-- ==========================================
+             CABEÇALHO DO SITE
+             ========================================== -->
+        <header class="header">
+            <h1>Code Share</h1>
+            <p>Copie os códigos abaixo com apenas um clique</p>
+            <div class="header-line"></div>
+        </header>
+
+        <!-- ==========================================
+             LINK DESTACADO
+             ========================================== 
+             ALTERE AQUI:
+             - href: coloque o link de destino
+             - <span>: altere o texto do botão
+             ========================================== -->
+        <a href__="https://exemplo.com" target="_blank" class="link-banner">
+            <span>📌 Clique aqui para acessar</span>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+            </svg>
+        </a>
+
+        <!-- ==========================================
+             BLOCOS DE CÓDIGO
+             ========================================== -->
+        <div class="code-blocks">
+
+            <!-- ==========================================
+                 BLOCO 1
+                 ==========================================
+                 ALTERE AQUI:
+                 - <h3>: título do bloco 1
+                 - <pre><code>: cole o código 1 aqui
+                 ========================================== -->
+            <div class="code-block">
+                <div class="code-header">
+                    <h3 class="code-title">📄 Código 1</h3>
+                    <button class="copy-btn" onclick="copyCode(this, 'code1')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                        </svg>
+                        <span>Copiar</span>
+                    </button>
+                </div>
+                <div class="code-content">
+                    <pre id="code1"><code><!-- COLE SEU CÓDIGO AQUI NO BLOCO 1 --></code></pre>
+                </div>
+            </div>
+
+            <!-- ==========================================
+                 BLOCO 2
+                 ==========================================
+                 ALTERE AQUI:
+                 - <h3>: título do bloco 2
+                 - <pre><code>: cole o código 2 aqui
+                 ========================================== -->
+            <div class="code-block">
+                <div class="code-header">
+                    <h3 class="code-title">📄 Código 2</h3>
+                    <button class="copy-btn" onclick="copyCode(this, 'code2')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                        </svg>
+                        <span>Copiar</span>
+                    </button>
+                </div>
+                <div class="code-content">
+                    <pre id="code2"><code><!-- COLE SEU CÓDIGO AQUI NO BLOCO 2 --></code></pre>
+                </div>
+            </div>
+
+            <!-- ==========================================
+                 BLOCO 3
+                 ==========================================
+                 ALTERE AQUI:
+                 - <h3>: título do bloco 3
+                 - <pre><code>: cole o código 3 aqui
+                 ========================================== -->
+            <div class="code-block">
+                <div class="code-header">
+                    <h3 class="code-title">📄 Código 3</h3>
+                    <button class="copy-btn" onclick="copyCode(this, 'code3')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                        </svg>
+                        <span>Copiar</span>
+                    </button>
+                </div>
+                <div class="code-content">
+                    <pre id="code3"><code><!-- COLE SEU CÓDIGO AQUI NO BLOCO 3 --></code></pre>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ==========================================
+             RODAPÉ
+             ========================================== -->
+        <footer class="footer">
+            <p>© <span id="year"></span> — Code Share</p>
+        </footer>
+
+    </div>
+
+    <!-- ==========================================
+         JAVASCRIPT - FUNÇÃO DE COPIAR CÓDIGO
+         ========================================== -->
+    <script>
+        // Atualiza o ano no rodapé automaticamente
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        // Função que copia o código quando o botão é clicado
+        function copyCode(button, codeId) {
+            // Pega o texto do elemento <pre>
+            const codeElement = document.getElementById(codeId);
+            const codeText = codeElement.textContent;
+
+            // Copia para a área de transferência
+            navigator.clipboard.writeText(codeText).then(() => {
+                // Altera o visual do botão para "Copiado!"
+                const originalHTML = button.innerHTML;
+                button.classList.add('copied');
+                button.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                    <span>Copiado!</span>
+                `;
+
+                // Volta ao normal após 2 segundos
+                setTimeout(() => {
+                    button.classList.remove('copied');
+                    button.innerHTML = originalHTML;
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>
