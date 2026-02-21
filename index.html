@@ -183,7 +183,7 @@
             width: calc(70% + 40px);
             max-width: 640px;
             aspect-ratio: 16/10;
-            border: px solid transparent;
+            border: 1px solid transparent;
             border-image: linear-gradient(45deg, #00d4ff, #0066ff, #00d4ff) 1;
             border-radius: 25px;
             pointer-events: none;
@@ -245,9 +245,26 @@
         /* Buttons */
         .button-group {
             display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
+            justify-content: space-between;
             align-items: center;
+            width: 100%;
+        }
+
+        .button-slot {
+            flex: 1;
+            display: flex;
+        }
+
+        .button-slot.left {
+            justify-content: flex-start;
+        }
+
+        .button-slot.center {
+            justify-content: center;
+        }
+
+        .button-slot.right {
+            justify-content: flex-end;
         }
 
         .neon-button {
@@ -269,6 +286,7 @@
             display: inline-flex;
             align-items: center;
             gap: 10px;
+            white-space: nowrap;
         }
 
         .neon-button::before {
@@ -314,6 +332,11 @@
         .neon-button:disabled {
             opacity: 0.3;
             cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .neon-button.hidden {
+            visibility: hidden;
             pointer-events: none;
         }
 
@@ -522,13 +545,10 @@
                 font-size: 1rem;
             }
 
-            .button-group {
-                justify-content: center;
-            }
-
             .neon-button {
                 padding: 10px 20px;
-                font-size: 0.8rem;
+                font-size: 0.75rem;
+                letter-spacing: 1px;
             }
         }
 
@@ -559,6 +579,13 @@
             .indicator {
                 width: 10px;
                 height: 10px;
+            }
+
+            .neon-button {
+                padding: 8px 14px;
+                font-size: 0.65rem;
+                gap: 5px;
+                letter-spacing: 1px;
             }
         }
 
@@ -645,28 +672,37 @@
                 <h2 class="content-title" id="slideTitle"></h2>
                 <p class="content-description" id="slideDescription"></p>
                 <div class="button-group" id="buttonGroup">
-                    <a href__="#" target="_blank" rel="noopener noreferrer" class="neon-button primary" id="linkButton">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                            <polyline points="15 3 21 3 21 9"></polyline>
-                            <line x1="10" y1="14" x2="21" y2="3"></line>
-                        </svg>
-                        <span id="linkText">Acessar Site</span>
-                    </a>
-                    
-                    <button class="neon-button" id="prevButton" style="display:none;">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polyline points="15 18 9 12 15 6"></polyline>
-                        </svg>
-                        Voltar
-                    </button>
-                    
-                    <button class="neon-button" id="nextButton">
-                        Próximo
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polyline points="9 18 15 12 9 6"></polyline>
-                        </svg>
-                    </button>
+                    <!-- ESQUERDA: Voltar -->
+                    <div class="button-slot left">
+                        <button class="neon-button hidden" id="prevButton">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="15 18 9 12 15 6"></polyline>
+                            </svg>
+                            Voltar
+                        </button>
+                    </div>
+
+                    <!-- CENTRO: Acessar Site -->
+                    <div class="button-slot center">
+                        <a href__="#" target="_blank" rel="noopener noreferrer" class="neon-button primary" id="linkButton">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                                <polyline points="15 3 21 3 21 9"></polyline>
+                                <line x1="10" y1="14" x2="21" y2="3"></line>
+                            </svg>
+                            <span id="linkText">Acessar Site</span>
+                        </a>
+                    </div>
+
+                    <!-- DIREITA: Próximo -->
+                    <div class="button-slot right">
+                        <button class="neon-button" id="nextButton">
+                            Próximo
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="9 18 15 12 9 6"></polyline>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -694,7 +730,6 @@
         // ====================================
         const slides = [
             {
-                // SLIDE 1 - 
                 image: "https://cdn-gx-ai-media.oai.operacdn.com/public/generated_images/7515a643-f7b1-11f0-9817-e58c241851de/c69a6c04.png", 
                 title: "INSTALAÇÃO ARDUINO ", 
                 description: "APP QUE PERMITE A TRANSMISSÃO E COMUNIOCAÇÃO DO CODIGO DO COMPUTADOR PARA A PLACA.",
@@ -702,7 +737,6 @@
                 linkText: "Acessar Site" 
             },
             {
-                // SLIDE 2 - 
                 image: "https://cdn-gx-ai-media.oai.operacdn.com/public/generated_images/698d0866-f7b5-11f0-aa8c-af401001f450/16e47c8a.png", 
                 title: "TINKERCAD", 
                 description: " PLATAFORMA VIRTUAL PARA SIMULAÇÃO DE COMPONENTES ARDUINO", 
@@ -710,7 +744,6 @@
                 linkText: "Acessar Site"
             },
             {
-                // SLIDE 3 - 
                 image: "https://cdn-gx-ai-media.oai.operacdn.com/public/generated_images/74ac209f-0eb1-11f1-a9d7-6d10f7808347/90e8824e.png", 
                 title: "PROJETO FISICO", 
                 description: " PLATAFORMA VIRTUAL COM CODIGO E SIMULAÇÃO DE PROJETO FISICO", 
@@ -747,7 +780,6 @@
 
         // Initialize
         function init() {
-            // Create indicators
             slides.forEach((_, index) => {
                 const indicator = document.createElement('div');
                 indicator.className = 'indicator' + (index === 0 ? ' active' : '');
@@ -810,9 +842,18 @@
             // Update counter
             currentSlideEl.textContent = (currentSlide + 1).toString().padStart(2, '0');
             
-            // Update buttons
-            prevButton.style.display = currentSlide > 0 ? 'inline-flex' : 'none';
-            nextButton.style.display = currentSlide < slides.length - 1 ? 'inline-flex' : 'none';
+            // Update buttons - usa classe hidden para manter o espaço
+            if (currentSlide > 0) {
+                prevButton.classList.remove('hidden');
+            } else {
+                prevButton.classList.add('hidden');
+            }
+
+            if (currentSlide < slides.length - 1) {
+                nextButton.classList.remove('hidden');
+            } else {
+                nextButton.classList.add('hidden');
+            }
             
             navLeft.disabled = currentSlide === 0;
             navRight.disabled = currentSlide === slides.length - 1;
